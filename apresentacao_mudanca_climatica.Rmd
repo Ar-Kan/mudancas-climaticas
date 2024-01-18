@@ -5,8 +5,11 @@ title-slide-attributes:
     data-background-size: cover
     data-background-opacity: "0.35"
 
-format: 
+format:
   revealjs:
+    output-dir: .
+    output-file: index.html
+    embed-resources: true
     footer: Alan Abrahão. Arquimedes Macedo. Mariana Coin. Tiago Cortelini.
     lang: pt-BR
     theme: [dark, ./style.scss]
