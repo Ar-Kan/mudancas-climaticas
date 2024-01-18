@@ -29,9 +29,10 @@ library(ggplot2)
 library(scales)
 library(dplyr)
 library(viridis)
-require(reshape2)
+library(reshape2)
 library(knitr)
 library(zoo)
+library(ggdark)
 ```
 
 
@@ -104,6 +105,33 @@ kable(
 ```
 ::::
 
+## Análise Descritiva {transition="zoom-in fade-out"}
+
+#### Temperatura média anual no Brasil {.custom__center}
+
+
+::: {.r-hstack}
+```{r, echo = FALSE}
+#| fig-width: 20
+#| fig-height: 10
+#| fig-align: 'center'
+#| echo: false
+
+p <- ggplot(df, aes(x = Year, y = Meteorological.year, fill = Meteorological.year)) +
+  geom_bar(stat = "identity") +
+  scale_fill_viridis(option = "H") +
+  labs(x = "Ano",
+       y = "Variação em °C") +
+  dark_theme_light(base_size = 22) +
+  theme(
+    plot.background = element_rect(fill = "#191919")
+  ) +
+  labs(fill = "Variação") +
+  scale_x_continuous(breaks = seq(1960, 2020, 5)) +
+  theme(axis.text = element_text(size = 20))
+p
+```
+:::
 
 ## Análise Descritiva
 
@@ -112,14 +140,11 @@ kable(
 
 ::: {.r-hstack .justify-center}
 ```{r, echo = FALSE}
-ggplot(df, aes(x = Year, y = Meteorological.year, fill = Meteorological.year)) +
-  geom_bar(stat = "identity") +
-  scale_fill_viridis(option = "H") +
-  labs(x = "Ano",
-       y = "Variação em °C") +
-  theme_minimal() +
-  labs(fill = "Variação") +
-  scale_x_continuous(breaks = seq(1960, 2020, 5))
+p +
+  dark_theme_light() +
+  theme(
+    plot.background = element_rect(fill = "#191919")
+  )
 ```
 :::
 
@@ -137,13 +162,18 @@ ggplot(df, aes(x = Year, y = Meteorological.year, fill = Meteorological.year)) +
 ::::
 :::::
 
-## Análise Descritiva
+## Análise Descritiva {transition="zoom-in fade-out"}
 
 #### Temperatura média sazonal no Brasil {.custom__center}
 
-::: {.r-hstack .justify-center}
+::: {.r-hstack}
 ```{r, echo = FALSE}
-ggplot(dfw, aes(Year)) +
+#| fig-width: 20
+#| fig-height: 10
+#| fig-align: 'center'
+#| echo: false
+
+p <- ggplot(dfw, aes(Year)) +
   geom_line(aes(y = Meteorological.year, colour = "Anual")) + 
   geom_line(aes(y = Dec.Jan.Feb, colour = "Dez-Fev")) +
   geom_line(aes(y = Mar.Apr.May, colour = "Mar-Mai")) +
@@ -152,9 +182,27 @@ ggplot(dfw, aes(Year)) +
   geom_line(aes(y = 0), col = "lightgray") +
   labs(x = "Ano",
        y = "Variação em °C") +
-  theme_minimal() +
+  dark_theme_light(base_size = 22) +
+  theme(
+    plot.background = element_rect(fill = "#191919")
+  ) +
   labs(color = '') +
   scale_x_continuous(breaks = seq(1960, 2020, 5))
+p
+```
+:::
+
+## Análise Descritiva
+
+#### Temperatura média sazonal no Brasil {.custom__center}
+
+::: {.r-hstack .justify-center}
+```{r, echo = FALSE}
+p +
+  dark_theme_light() +
+  theme(
+    plot.background = element_rect(fill = "#191919")
+  )
 ```
 :::
 
@@ -168,20 +216,43 @@ ggplot(dfw, aes(Year)) +
 ::::
 :::::
 
+## Análise Descritiva {transition="zoom-in fade-out"}
+
+#### Temperatura média anual global {.custom__center}
+
+::: {.r-hstack}
+```{r, echo = FALSE}
+#| fig-width: 20
+#| fig-height: 10
+#| fig-align: 'center'
+#| echo: false
+
+p <- ggplot(dfw, aes(x = Year, y = Meteorological.year, fill = Meteorological.year)) +
+  geom_bar(stat = "identity") +
+  scale_fill_viridis(option = "H") +
+  labs(y = "Variação em °C",
+       x = "Ano") +
+  dark_theme_light(base_size = 22) +
+  theme(
+    plot.background = element_rect(fill = "#191919")
+  ) +
+  labs(fill = "Variação") +
+  scale_x_continuous(breaks = seq(1960, 2020, 5))
+p
+```
+:::
+
 ## Análise Descritiva
 
 #### Temperatura média anual global {.custom__center}
 
 ::: {.r-hstack .justify-center}
 ```{r, echo = FALSE}
-ggplot(dfw, aes(x = Year, y = Meteorological.year, fill = Meteorological.year)) +
-  geom_bar(stat = "identity") +
-  scale_fill_viridis(option = "H") +
-  labs(y = "Variação em °C",
-       x = "Ano") +
-  theme_minimal() +
-  labs(fill = "Variação") +
-  scale_x_continuous(breaks = seq(1960, 2020, 5))
+p +
+  dark_theme_light() +
+  theme(
+    plot.background = element_rect(fill = "#191919")
+  )
 ```
 :::
 
@@ -259,7 +330,10 @@ ggplot(data = melt(dfl), aes(x = Interval, y = value)) +
   geom_boxplot(aes(fill = Interval)) +
   labs(x = "",
        y = "Variação em °C") +
-  theme_minimal() +
+  dark_theme_light() +
+  theme(
+    plot.background = element_rect(fill = "#191919")
+  ) +
   labs(fill = '')
 ```
 :::
@@ -271,10 +345,13 @@ ggplot(data = dfl, aes(x = Value)) +
   facet_wrap(~Interval, nrow = 2) +
   labs(x = "Variação em °C",
        y = "Frequência") +
-  theme_minimal() +
-  theme(strip.background = element_rect(fill = "white", colour = "gray90",
+  dark_theme_light() +
+  theme(
+    plot.background = element_rect(fill = "#191919")
+  ) +
+  theme(strip.background = element_rect(fill = "gray15", colour = "#191919",
                                         size = 0.5, linetype = "solid"),
-        strip.text = element_text(face = "bold"))
+        strip.text = element_text(face = "bold", colour = "white"))
 ```
 :::
 
@@ -542,12 +619,17 @@ kable(
 _* $\alpha = 0{,}05$ e região crítica de $1{,}670$_
 :::
 
-## Teste de hipóteses
+## Teste de hipóteses {transition="zoom-in fade-out"}
 
 ### Intervalos de confiança {.custom__center}
 
-::: {.r-hstack .justify-center}
+::: {.r-hstack}
 ```{r, echo = FALSE}
+#| fig-width: 20
+#| fig-height: 10
+#| fig-align: 'center'
+#| echo: false
+
 dft$Intervalo <- factor(dft$Intervalo, levels = unique(dft$Intervalo))
 ggplot(
     data = dft,
@@ -571,16 +653,12 @@ ggplot(
     width = 0.1,
   ) +
   scale_y_continuous(breaks = breaks_pretty()) +
-  theme_minimal() +
+  dark_theme_light(base_size = 22) +
   theme(
-    axis.text.y = element_text(color = "#878888"),
-    axis.text.x = element_text(color = "#878888"),
-    panel.grid.minor = element_line(linetype = "dashed", color = "#d6d6d6", linewidth = 0.5),
-    panel.grid.major = element_line(linetype = "dashed", color = "#d6d6d6", linewidth = 0.5)
+    plot.background = element_rect(fill = "#191919"),
   ) +
   labs(x = "",
-       y = "Variação em °C") +
-  theme_minimal()
+       y = "Variação em °C")
 ```
 :::
 
@@ -628,7 +706,7 @@ Em síntese:
 
 :::: {.r-hstack .justify-center}
 ::: {.fragment .fade-up}
-![](./imagens/xablau.gif){fig-align="center"}
+![](./imagens/xablau.gif){fig-align="center" width="500"}
 
 ###### Agradecemos pela atenção! {.custom__center}
 :::
