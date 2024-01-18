@@ -1,0 +1,48 @@
+/*-- scss:rules --*/
+
+.footer {
+  font-weight: bold;
+  color: #aaa !important;
+}
+
+.reveal.smaller {
+  .callout.callout-style-default .callout-icon::before, .callout.callout-style-simple .callout-icon::before {
+    height: 1rem !important;
+    width: 1rem !important;
+    background-size: 1rem 1rem !important;
+  }
+}
+
+.fragment.blur {
+  opacity: 1 !important;
+  visibility: visible !important;
+  filter: blur(5px);
+}
+
+.fragment.blur.visible {
+  filter: none;
+}
+
+.custom__sub-item {
+  margin-left: 1.5rem;
+  margin-top: -1.5rem;
+}
+
+.custom__list-group .fragment {
+  ol, ul {
+    margin-bottom: 0 !important;
+  }
+
+  .custom__sub-item {
+    margin-left: 1.5rem;
+    margin-top: -0.5rem;
+  }
+}
+
+.custom__center {
+  text-align: center;
+}
+
+.custom__text-small {
+  font-size: 1.5rem;
+}

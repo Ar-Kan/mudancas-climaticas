@@ -1,0 +1,410 @@
+---
+title: "Testes de hipóteses sobre mudanças climáticas no Brasil"
+output:
+  html_document: default
+  pdf_document: default
+date: "2024-01-18"
+---
+
+<style>
+body {
+   text-align: justify
+}
+img {
+    display: block;
+    margin: 0 auto;
+}
+</style>
+
+```{r, echo = FALSE, results='hide', message=FALSE}
+library(tidyverse)
+library(ggplot2)
+library(scales)
+library(dplyr)
+library(viridis)
+require(reshape2)
+library(knitr)
+library(zoo)
+```
+
+Componentes: Alan Abrahão, Arquimedes Macedo, Mariana Coin, Tiago Cortelini
+
+![](7a7a7542-capa-blog_mudancas-climaticas_jubi.png)
+
+## Introdução
+
+Neste relatório analisaremos 62 anos de dados de variação de temperatura no Brasil. Utilizando métodos estatísticos, buscaremos compreender as variações térmicas que moldaram nosso clima ao longo das últimas seis décadas.
+
+
+## Objetivos
+
+Este estudo visa compreender as mudanças de temperatura no Brasil ao longo de 62 anos, concentrando-se em três objetivos principais. Primeiramente, analisaremos a variação anual das temperaturas, buscando identificar padrões de aumento ou diminuição ao longo desse extenso período. Em seguida, direcionaremos nossa atenção para as variações sazonais, examinando de perto as estações do ano para entender as nuances climáticas específicas de cada uma delas. Por fim, situaremos essas análises em um contexto global, comparando as tendências observadas no Brasil com as mudanças climáticas mundiais, contribuindo assim para uma compreensão mais abrangente e informada das dinâmicas brasileiras.
+
+## Metodologia
+
+Para este estudo, a coleta de dados foi realizada a partir da fonte dos dados da FAOSTAT (Food and Agriculture Organization Corporate Statistical Database) disponibilizada no Kaggle, acessível através do seguinte link: https://www.kaggle.com/datasets/sevgisarac/temperature-change/data. 
+
+É uma base de dados estatísticos mantida pela Organização das Nações Unidas para Alimentação e Agricultura (FAO). Reconhecida por sua precisão e cobertura extensa, a FAOSTAT compila e disponibiliza informações abrangentes relacionadas à agricultura, alimentação e desenvolvimento rural em nível global, abrangendo também os registros necessários para uma análise robusta das mudanças de temperatura no Brasil. 
+
+O teste de hipóteses escolhido foi o teste t-student, pois não sabemos a variância da população. Partimos da hipótese nula em que a média populacional é igual a zero. A fórmula do teste é a seguinte:
+
+$$t = \frac{\bar x - \mu_0}{s/\sqrt{n}}$$
+
+Onde:
+
+- $\bar x$ é a média amostral;
+
+- $\mu_0$ é a média populacional para $H_0$;
+
+- $s$ é o desvio padrão amostral, e,
+
+- $n$ é o número de observações da amostra.
+
+
+## Análise Descritiva
+
+Inicialmente, vamos analisar o comportamento da mudança de temperatura média ano a ano no Brasil. 
+
+
+```{r, echo = FALSE}
+df <- read.csv("./mudanca_climatica.csv", header = TRUE)
+dfw <- read.csv("./mudanca_climatica_mundo.csv", header = TRUE)
+dfl <- read.csv("./mudanca_climatica_list.csv", header = TRUE)
+```
+
+```{r, echo = FALSE}
+ggplot(df, aes(x = Year, y = Meteorological.year, fill = Meteorological.year)) +
+  geom_bar(stat = "identity") +
+  scale_fill_viridis(option = "H") +
+  labs(title = paste(" Variação da Temperatura Média no Brasil"),
+       y = "Variação em °C",
+       x = "Ano") +
+  theme_minimal() +
+  labs(fill = "Variação") 
+```
+
+O gráfico exibe uma tendência ascendente, indicando um aumento consistente nas temperaturas. Este padrão sugere uma mudança significativa no clima ao longo destas 6 décadas.
+
+Para verificarmos que não se trata de uma mudança local, vamos analisar o comportamento da mudança de temperatura média anual global:
+
+
+```{r, echo = FALSE}
+ggplot(dfw, aes(x = Year, y = Meteorological.year, fill = Meteorological.year)) +
+  geom_bar(stat = "identity") +
+  scale_fill_viridis(option = "H") +
+  labs(title = paste(" Variação da Temperatura Média no Mundo"),
+       y = "Variação em °C",
+       x = "Ano") +
+  theme_minimal() +
+  labs(fill = "Variação") 
+```
+
+
+Verifica-se que não é uma tendência exclusivamente brasileira, visto que a variação da temperatura média no mundo apresenta tendência de crescimento muito semelhante àquela observada para o Brasil.
+
+Faz-se necessário analisar também as variações que ocorrem sazonalmente, com o objetivo de identificar se há algum evento atrelado a uma estação do ano responsável pelas mudanças climáticas observadas anualmente. A partir do gráfico abaixo, conclui-se que a variação de temperatura segue as mesmas tendências em todas as estações, não sendo possível identificar um evento ligado às estações do ano responsável pelas mudanças climáticas.
+
+
+```{r, echo = FALSE}
+ggplot(dfw, aes(Year)) +
+  geom_line(aes(y = Meteorological.year, colour = "Anual")) + 
+  geom_line(aes(y = Dec.Jan.Feb, colour = "Dez-Fev")) +
+  geom_line(aes(y = Mar.Apr.May, colour = "Mar-Mai")) +
+  geom_line(aes(y = Jun.Jul.Aug, colour = "Jun-Ago")) +
+  geom_line(aes(y = Sep.Oct.Nov, colour = "Set-Nov")) +
+  geom_line(aes(y = 0), col = "lightgray") +
+  labs(title = "Mudança na temperatura média no Brasil",
+       x = "Ano",
+       y = "Variação em °C") +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  labs(color = '') +
+  scale_x_continuous(breaks = seq(1960, 2020, 5))
+```
+
+### Análise das derivadas
+
+A partir da análise descritiva, percebe-se que a variação da temperatura média no Brasil apresenta uma tendência de  crescimento. Para verificar se esta tendência é consistente, vamos analisar a variação da temperatura média ano a ano, através das derivadas.
+
+Para isso, usaremos o método de diferenças finitas, que consiste em calcular a diferença entre os valores de uma variável em dois pontos consecutivos. A primeira derivada é calculada pela seguinte fórmula:
+
+$$f'(x) = \frac{f(x+h) - f(x)}{h}$$
+
+Onde $h$ é a variação entre os pontos consecutivos.
+
+E, a segunda derivada é calculada pela seguinte fórmula:
+
+$$f''(x) = \frac{f(x+h) - 2f(x) + f(x-h)}{h^2}$$
+
+```{r, echo = FALSE}
+diff <- diff(df$Meteorological.year)
+diff2 <- diff(diff)
+
+kable(
+  data.frame(
+    "Derivada" = c("Primeira", "Segunda"),
+    "Média" = c(
+      round(mean(diff, na.rm = TRUE), 4),
+      round(mean(diff2, na.rm = TRUE), 4)
+    ),
+    "Mediana" = c(
+      round(median(diff, na.rm = TRUE), 4),
+      round(median(diff2, na.rm = TRUE), 4)
+    )
+  ),
+  caption = "Média e Mediana das derivadas"
+)
+```
+
+Desta forma podemos observar que a variação da temperatura média no Brasil, no período estudado, apresentou uma tendência de crescimento. E, em média, a variação da temperatura média no Brasil aumenta 0,012°C por ano, com um crescimento de 0,002°C ao ano.
+
+## Análise Estatística
+
+Para que possamos realizar os testes propostos precisamos verificar a normalidade dos dados. Assim, de maneira empírica, a partir da imagem abaixo, percebe-se uma variação normal ou quasi-normal nos intervalos estudados.
+
+```{r, echo = FALSE}
+ggplot(data = melt(dfl), aes(x = Interval, y = value)) +
+  geom_boxplot(aes(fill = Interval)) +
+  labs(x = "",
+       y = "Variação em °C") +
+  theme_minimal() +
+  labs(fill = '')
+```
+```{r}
+ggplot(data = dfl, aes(x = Value)) +
+  geom_histogram(bins = 10, colour = "gray", fill = "royalblue") +
+  facet_wrap(~Interval, nrow = 2) +
+  labs(x = "Variação em °C",
+       y = "Frequência") +
+  theme_minimal() +
+  theme(strip.background = element_rect(fill = "white", colour = "gray90",
+                                        size = 0.5, linetype = "solid"),
+        strip.text = element_text(face = "bold"))
+```
+
+
+Tentaremos, portanto, responder às seguintes perguntas sobre a variação da temperatura, através de testes estatísticos:
+
+1. Há uma tendência de aumento anual no Brasil?
+
+2. Há uma tendência de aumento no Brasil durante o verão (Dez-Fev)?
+
+3. Há uma tendência de aumento no Brasil durante o outono (Mar-Mai)?
+
+4. Há uma tendência de aumento no Brasil durante o inverno (Jun-Ago)?
+
+5. Há uma tendência de aumento no Brasil durante a primavera (Set-Nov)?
+
+6. Há uma tendência de aumento anual global?
+
+Utilizando um $\alpha$ = 0,05, com 61 graus de liberdade, e uma região crítica de 1,670, para $H_0$: $\mu$ = 0 e $H_1$: $\mu$ > 0, temos os seguintes resultados:
+
+
+
+```{r, echo = FALSE}
+confidence_limit <- function(data) {
+  n <- length(data)
+  t <- qt(0.05 / 2, df = n - 1, lower.tail = F)
+  t * sd(data) / sqrt(n)
+}
+```
+
+```{r, echo = FALSE, results='hide', message=FALSE}
+# Perguntas
+# 1. Há uma tendência de aumento da temperatura média anual no Brasil?
+# 2. Há uma tendência de aumento da temperatura média no Brasil no verão (Dez-Fev)?
+# 3. Há uma tendência de aumento da temperatura média no Brasil no outono (Mar-Mai)?
+# 4. Há uma tendência de aumento da temperatura média no Brasil no inverno (Jun-Ago)?
+# 5. Há uma tendência de aumento da temperatura média no Brasil na primavera (Set-Nov)?
+# 6. Há uma tendência de aumento da temperatura média anual no mundo?
+
+N <- 62
+alpha <- 0.05
+regiao_critica <- qt(alpha, df = N - 1, lower.tail = F)
+
+media_1 <- mean(dfw$Meteorological.year)
+desvio_padrao_1 <- sd(dfw$Meteorological.year)
+estatistica_t_1 <- (media_1 - 0) / (desvio_padrao_1 / sqrt(N))
+valor_p_1 <- pt(estatistica_t_1, df = N - 1, lower.tail = F)
+limite_confianca_1 <- confidence_limit(dfw$Meteorological.year)
+sprintf("(1) Rejeita H0? %s", valor_p_1 < regiao_critica)
+sprintf("(1) Limite de confiança: (%s, %s)", media_1 - limite_confianca_1, media_1 + limite_confianca_1)
+
+media_2 <- mean(dfw$Dec.Jan.Feb)
+desvio_padrao_2 <- sd(dfw$Dec.Jan.Feb)
+estatistica_t_2 <- (media_2 - 0) / (desvio_padrao_2 / sqrt(N))
+valor_p_2 <- pt(estatistica_t_2, df = N - 1, lower.tail = F)
+limite_confianca_2 <- confidence_limit(dfw$Dec.Jan.Feb)
+sprintf("(2) Rejeita H0? %s", valor_p_2 < regiao_critica)
+sprintf("(2) Limite de confiança: (%s, %s)", media_2 - limite_confianca_2, media_2 + limite_confianca_2)
+
+media_3 <- mean(dfw$Mar.Apr.May)
+desvio_padrao_3 <- sd(dfw$Mar.Apr.May)
+estatistica_t_3 <- (media_3 - 0) / (desvio_padrao_3 / sqrt(N))
+valor_p_3 <- pt(estatistica_t_3, df = N - 1, lower.tail = F)
+limite_confianca_3 <- confidence_limit(dfw$Mar.Apr.May)
+sprintf("(3) Rejeita H0? %s", valor_p_3 < regiao_critica)
+sprintf("(3) Limite de confiança: (%s, %s)", media_3 - limite_confianca_3, media_3 + limite_confianca_3)
+
+media_4 <- mean(dfw$Jun.Jul.Aug)
+desvio_padrao_4 <- sd(dfw$Jun.Jul.Aug)
+estatistica_t_4 <- (media_4 - 0) / (desvio_padrao_4 / sqrt(N))
+valor_p_4 <- pt(estatistica_t_4, df = N - 1, lower.tail = F)
+limite_confianca_4 <- confidence_limit(dfw$Jun.Jul.Aug)
+sprintf("(4) Rejeita H0? %s", valor_p_4 < regiao_critica)
+sprintf("(4) Limite de confiança: (%s, %s)", media_4 - limite_confianca_4, media_4 + limite_confianca_4)
+
+media_5 <- mean(dfw$Sep.Oct.Nov)
+desvio_padrao_5 <- sd(dfw$Sep.Oct.Nov)
+estatistica_t_5 <- (media_5 - 0) / (desvio_padrao_5 / sqrt(N))
+valor_p_5 <- pt(estatistica_t_5, df = N - 1, lower.tail = F)
+limite_confianca_5 <- confidence_limit(dfw$Sep.Oct.Nov)
+sprintf("(5) Rejeita H0? %s", valor_p_5 < regiao_critica)
+sprintf("(5) Limite de confiança: (%s, %s)", media_5 - limite_confianca_5, media_5 + limite_confianca_5)
+
+media_6 <- mean(dfw$Meteorological.year)
+desvio_padrao_6 <- sd(dfw$Meteorological.year)
+estatistica_t_6 <- (media_6 - 0) / (desvio_padrao_6 / sqrt(N))
+valor_p_6 <- pt(estatistica_t_6, df = N - 1, lower.tail = F)
+limite_confianca_6 <- confidence_limit(dfw$Meteorological.year)
+sprintf("(6) Rejeita H0? %s", valor_p_6 < regiao_critica)
+sprintf("(6) Limite de confiança: (%s, %s)", media_6 - limite_confianca_6, media_6 + limite_confianca_6)
+
+dft <- data.frame(
+  "Pergunta" = c(
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ),
+  "Intervalo" = c(
+    "Ano",
+    "Dez-Fev",
+    "Mar-Mai",
+    "Jun-Ago",
+    "Set-Nov",
+    "Global"
+  ),
+  "Média" = c(
+    media_1,
+    media_2,
+    media_3,
+    media_4,
+    media_5,
+    media_6
+  ),
+  "Desvio Padrão" = c(
+    desvio_padrao_1,
+    desvio_padrao_2,
+    desvio_padrao_3,
+    desvio_padrao_4,
+    desvio_padrao_5,
+    desvio_padrao_6
+  ),
+  "Estatística T" = c(
+    estatistica_t_1,
+    estatistica_t_2,
+    estatistica_t_3,
+    estatistica_t_4,
+    estatistica_t_5,
+    estatistica_t_6
+  ),
+  "Valor P" = c(
+    valor_p_1,
+    valor_p_2,
+    valor_p_3,
+    valor_p_4,
+    valor_p_5,
+    valor_p_6
+  ),
+  "Aceita H0?" = c(
+    valor_p_1 > regiao_critica,
+    valor_p_2 > regiao_critica,
+    valor_p_3 > regiao_critica,
+    valor_p_4 > regiao_critica,
+    valor_p_5 > regiao_critica,
+    valor_p_6 > regiao_critica
+  ),
+  "IC inferior" = c(
+    media_1 - limite_confianca_1,
+    media_2 - limite_confianca_2,
+    media_3 - limite_confianca_3,
+    media_4 - limite_confianca_4,
+    media_5 - limite_confianca_5,
+    media_6 - limite_confianca_6
+  ),
+  "IC superior" = c(
+    media_1 + limite_confianca_1,
+    media_2 + limite_confianca_2,
+    media_3 + limite_confianca_3,
+    media_4 + limite_confianca_4,
+    media_5 + limite_confianca_5,
+    media_6 + limite_confianca_6
+  )
+)
+
+```
+
+```{r}
+kable(dft)
+```
+
+```{r, echo = FALSE}
+dft$Intervalo <- factor(dft$Intervalo, levels = unique(dft$Intervalo))
+ggplot(
+    data = dft,
+    aes(x = Intervalo, y = Média)
+  ) +
+  geom_bar(
+    aes(x = Intervalo, y = Média),
+    stat = "identity",
+    fill = "royalblue",
+    width = 0.5,
+  ) +
+  geom_errorbar(
+    aes(
+      x = Intervalo,
+      y = Média,
+      ymin = IC.inferior,
+      ymax = IC.superior
+    ),
+    colour = "blue",
+    linewidth = 0.8,
+    width = 0.1,
+  ) +
+  scale_y_continuous(breaks = breaks_pretty()) +
+  theme_minimal() +
+  theme(
+    axis.text.y = element_text(color = "#878888"),
+    axis.text.x = element_text(color = "#878888"),
+    panel.grid.minor = element_line(linetype = "dashed", color = "#d6d6d6", linewidth = 0.5),
+    panel.grid.major = element_line(linetype = "dashed", color = "#d6d6d6", linewidth = 0.5)
+  ) +
+  labs(title = "Intervalos de confiança",
+       x = "Intervalo",
+       y = "Variação em °C") +
+  theme_minimal()
+```
+
+
+Assim, com 95% de confiança, rejeita-se as hipóteses nulas, houve, portanto, uma tendência de aumento na variação da temperatura em todos os intervalos estudados. Tendo um aumento mínimo, anual, no Brasil, de 0,43°C.
+
+## Implicações e Conclusões Finais
+
+Em síntese, as análises destacaram que deve haver um aumento anual na temperatura registrada no Brasil, com variações maiores nos períodos de dezembro a fevereiro e março a maio, compreendendo verão e outono, respectivamente. Observa-se também que as temperaturas registradas nos períodos de junho a agosto e setembro a novembro, com o inverno e a primavera, têm uma variação menor em comparação ao Brasil e ao mundo, ainda tendo um aumento significativo ao longo dos anos.
+
+<br/>
+
+![](DWhH.gif)
+<br/>
+<br/>
+
+#### Agradecemos pela atenção!
+
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>

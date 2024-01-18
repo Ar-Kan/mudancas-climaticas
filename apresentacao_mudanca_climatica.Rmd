@@ -1,0 +1,632 @@
+---
+title: "Testes de hipóteses sobre mudanças climáticas no Brasil"
+title-slide-attributes:
+    data-background-image: ./imagens/capa_mudancas-climaticas.png
+    data-background-size: cover
+    data-background-opacity: "0.35"
+
+format: 
+  revealjs:
+    footer: Alan Abrahão. Arquimedes Macedo. Mariana Coin. Tiago Cortelini.
+    lang: pt-BR
+    theme: [dark, ./style.scss]
+    df-print: kable
+    highlight: zenburn
+    incremental: false
+    transition: slide
+    slide-number: true
+    width: 100%
+    height: 110%
+    center: true
+---
+
+```{r, echo = FALSE, results='hide', message=FALSE}
+library(tidyverse)
+library(ggplot2)
+library(scales)
+library(dplyr)
+library(viridis)
+require(reshape2)
+library(knitr)
+library(zoo)
+```
+
+
+```{r, echo = FALSE}
+df <- read.csv("./dados/mudanca_climatica.csv", header = TRUE)
+dfw <- read.csv("./dados/mudanca_climatica_mundo.csv", header = TRUE)
+dfl <- read.csv("./dados/mudanca_climatica_list.csv", header = TRUE)
+```
+
+## Objetivos
+
+::::: {.custom__list-group}
+:::: {.fragment .blur}
+1. Análise Anual de Temperaturas:
+
+::: {.custom__sub-item}
+  - Investigar a variação anual das temperaturas no Brasil.
+  - Identificar padrões de aumento ou diminuição ao longo deste período.
+:::
+::::
+
+:::: {.fragment .blur}
+2. Variações Sazonais:
+
+::: {.custom__sub-item}
+  - Examinar as variações sazonais no Brasil.
+  - Analisar as estações do ano para compreender as nuances climáticas específicas de cada uma.
+:::
+::::
+
+:::: {.fragment .blur}
+3. Contextualização Global:
+
+::: {.custom__sub-item}
+  - Situar as análises em um contexto global.
+  - Comparar as tendências observadas no Brasil com as mudanças climáticas mundiais.
+:::
+::::
+:::::
+
+## Metodologia
+
+::::: {.custom__list-group}
+:::: {.fragment .blur}
+- Dados obtidos de FAOSTAT (base de dados estatísticos mantida pela FAO -- Food and Agriculture Organization).
+  - Uma das agências da ONU para a Alimentação e a Agricultura.
+- Origem é o GISTEMP -- Banco de Dados de Temperatura Global da NASA.
+::::
+
+:::: {.fragment .blur}
+- Abrange o período de 1961 a 2022.
+- Período base entre 1951 e 1980.
+::::
+:::::
+
+:::: {.fragment .blur}
+```{r, results='asis'}
+database_simplified <- df[
+  c(1:3, nrow(df):nrow(df)),
+  c(1,2,3,4,16,17,18)
+]
+database_simplified[3,] = "..."
+database_simplified[,4] = "..."
+kable(
+  database_simplified,
+  caption = "Amostra dos dados",
+  col.names = c("Ano", "Jan", "Fev", " ", "Jun-Ago", "Set-Nov", "Anual"),
+  align = "r"
+)
+```
+::::
+
+
+## Análise Descritiva
+
+#### Temperatura média anual no Brasil {.custom__center}
+
+
+::: {.r-hstack .justify-center}
+```{r, echo = FALSE}
+ggplot(df, aes(x = Year, y = Meteorological.year, fill = Meteorological.year)) +
+  geom_bar(stat = "identity") +
+  scale_fill_viridis(option = "H") +
+  labs(x = "Ano",
+       y = "Variação em °C") +
+  theme_minimal() +
+  labs(fill = "Variação") +
+  scale_x_continuous(breaks = seq(1960, 2020, 5))
+```
+:::
+
+::::: {.custom__list-group}
+:::: {.fragment .blur}
+1. Tendência ascendente no gráfico.
+::::
+
+:::: {.fragment .blur}
+2. Indicação de aumento consistente nas temperaturas.
+::::
+
+:::: {.fragment .blur}
+3. Padrão que sugere uma mudança significativa no clima ao longo de seis décadas.
+::::
+:::::
+
+## Análise Descritiva
+
+#### Temperatura média sazonal no Brasil {.custom__center}
+
+::: {.r-hstack .justify-center}
+```{r, echo = FALSE}
+ggplot(dfw, aes(Year)) +
+  geom_line(aes(y = Meteorological.year, colour = "Anual")) + 
+  geom_line(aes(y = Dec.Jan.Feb, colour = "Dez-Fev")) +
+  geom_line(aes(y = Mar.Apr.May, colour = "Mar-Mai")) +
+  geom_line(aes(y = Jun.Jul.Aug, colour = "Jun-Ago")) +
+  geom_line(aes(y = Sep.Oct.Nov, colour = "Set-Nov")) +
+  geom_line(aes(y = 0), col = "lightgray") +
+  labs(x = "Ano",
+       y = "Variação em °C") +
+  theme_minimal() +
+  labs(color = '') +
+  scale_x_continuous(breaks = seq(1960, 2020, 5))
+```
+:::
+
+::::: {.custom__list-group}
+:::: {.fragment .blur}
+1. Segue tendências consistentes em todas as estações.
+::::
+
+:::: {.fragment .blur}
+2. Não é possível identificar um evento específico ligado às estações responsável pelas mudanças climáticas observadas.
+::::
+:::::
+
+## Análise Descritiva
+
+#### Temperatura média anual global {.custom__center}
+
+::: {.r-hstack .justify-center}
+```{r, echo = FALSE}
+ggplot(dfw, aes(x = Year, y = Meteorological.year, fill = Meteorological.year)) +
+  geom_bar(stat = "identity") +
+  scale_fill_viridis(option = "H") +
+  labs(y = "Variação em °C",
+       x = "Ano") +
+  theme_minimal() +
+  labs(fill = "Variação") +
+  scale_x_continuous(breaks = seq(1960, 2020, 5))
+```
+:::
+
+::::: {.custom__list-group}
+:::: {.fragment .blur}
+1. Variação da temperatura média global apresenta tendência semelhante à observada no Brasil.
+::::
+
+:::: {.fragment .blur}
+2. Não é uma tendência exclusivamente brasileira.
+::::
+:::::
+
+## Análise Descritiva
+
+#### Variação da temperatura média anual no Brasil {.custom__center}
+
+:::: {.fragment .blur}
+Analisando a primeira e segunda derivadas temos:
+
+```{r, echo = FALSE}
+diff <- diff(df$Meteorological.year)
+diff2 <- diff(diff)
+
+kable(
+  data.frame(
+    "Derivada" = c("Primeira", "Segunda"),
+    "Média" = c(
+      mean(diff, na.rm = TRUE),
+      mean(diff2, na.rm = TRUE)
+    ),
+    "Mediana" = c(
+      median(diff, na.rm = TRUE),
+      median(diff2, na.rm = TRUE)
+    )
+  ),
+  caption = "Média e mediana das derivadas",
+  digits = 4,
+  col.names = c("Derivada", "Média", "Mediana"),
+  row.names = FALSE,
+  align = "c",
+  format.args = list(
+    big.mark = ".",
+    decimal.mark = ","
+  )
+  
+)
+```
+::::
+
+
+::::: {.custom__list-group}
+:::: {.fragment .blur}
+1. A variação apresenta tendência de crescimento.
+::::
+
+:::: {.fragment .blur}
+2. Aumento médio de 0,012°C por ano.
+::::
+
+:::: {.fragment .blur}
+3. Crescendo 0,002°C anualmente.
+::::
+:::::
+
+## Análise Descritiva
+
+#### Distribuição {.custom__center}
+
+:::: {.columns .r-hstack .justify-center}
+
+::: {.column width="50%"}
+```{r, echo = FALSE}
+ggplot(data = melt(dfl), aes(x = Interval, y = value)) +
+  geom_boxplot(aes(fill = Interval)) +
+  labs(x = "",
+       y = "Variação em °C") +
+  theme_minimal() +
+  labs(fill = '')
+```
+:::
+
+::: {.column width="50%" }
+```{r}
+ggplot(data = dfl, aes(x = Value)) +
+  geom_histogram(bins = 10, colour = "gray", fill = "royalblue") +
+  facet_wrap(~Interval, nrow = 2) +
+  labs(x = "Variação em °C",
+       y = "Frequência") +
+  theme_minimal() +
+  theme(strip.background = element_rect(fill = "white", colour = "gray90",
+                                        size = 0.5, linetype = "solid"),
+        strip.text = element_text(face = "bold"))
+```
+:::
+
+::::
+
+::::: {.custom__list-group}
+:::: {.fragment .blur}
+1. Os conjuntos analisados apresentam distribuição normal ou quasi-normal.
+::::
+
+:::: {.fragment .blur}
+::: {.callout-tip}
+## Teorema Central do Limite
+
+A distribuição amostral da média de variáveis aleatórias independentes e identicamente distribuídas tende a uma distribuição normal à medida que o tamanho da amostra aumenta.
+:::
+::::
+:::::
+
+## Teste de hipóteses
+
+O teste de hipóteses escolhido foi o teste t-student para variáveis independentes:
+
+$$t = \frac{\bar x - \mu_0}{s/\sqrt{n}}$$
+
+::::: {.custom__list-group}
+:::: {.fragment .blur}
+1. As amostras são i.i.d., com distribuição (quasi)normal.
+::::
+
+:::: {.fragment .blur}
+2. O tamanho da amostra é pequeno (62 registros).
+::::
+
+:::: {.fragment .blur}
+3. A variância da população é desconhecida.
+::::
+:::::
+
+:::: {.fragment .blur}
+::: {.callout-tip}
+## Convergência
+
+Para amostras com tamanho maior que $50$ ou $60$, a distribuição t é praticamente igual à distribuição normal.
+:::
+::::
+
+## Teste de hipóteses
+
+Tentaremos, portanto, responder às seguintes perguntas sobre a variação da temperatura, através de testes estatísticos:
+
+::::: {.custom__list-group}
+:::: {.fragment .blur}
+1. Há uma tendência de aumento anual no Brasil?
+::::
+
+:::: {.fragment .blur}
+2. Há uma tendência de aumento no Brasil durante o verão (Dez-Fev)?
+
+3. Há uma tendência de aumento no Brasil durante o outono (Mar-Mai)?
+
+4. Há uma tendência de aumento no Brasil durante o inverno (Jun-Ago)?
+
+5. Há uma tendência de aumento no Brasil durante a primavera (Set-Nov)?
+::::
+
+:::: {.fragment .blur}
+6. Há uma tendência de aumento anual global?
+::::
+:::::
+
+## Teste de hipóteses
+
+:::: {.fragment .blur}
+Parâmetros utilizados:
+
+- $\alpha = 0{,}05$;
+- $61$ graus de liberdade, e
+- Região crítica de $1{,}670$.
+::::
+
+:::: {.fragment .blur}
+Hipóteses:
+
+- $H_0$: $\mu$ = 0
+- $H_1$: $\mu$ > 0
+::::
+
+## Teste de hipóteses
+
+```{r, echo = FALSE}
+confidence_limit <- function(data) {
+  n <- length(data)
+  t <- qt(0.05 / 2, df = n - 1, lower.tail = F)
+  t * sd(data) / sqrt(n)
+}
+```
+
+```{r, echo = FALSE, results='hide', message=FALSE}
+# Perguntas
+# 1. Há uma tendência de aumento da temperatura média anual no Brasil?
+# 2. Há uma tendência de aumento da temperatura média no Brasil no verão (Dez-Fev)?
+# 3. Há uma tendência de aumento da temperatura média no Brasil no outono (Mar-Mai)?
+# 4. Há uma tendência de aumento da temperatura média no Brasil no inverno (Jun-Ago)?
+# 5. Há uma tendência de aumento da temperatura média no Brasil na primavera (Set-Nov)?
+# 6. Há uma tendência de aumento da temperatura média anual no mundo?
+
+N <- 62
+alpha <- 0.05
+regiao_critica <- qt(alpha, df = N - 1, lower.tail = F)
+
+media_1 <- mean(dfw$Meteorological.year)
+desvio_padrao_1 <- sd(dfw$Meteorological.year)
+estatistica_t_1 <- (media_1 - 0) / (desvio_padrao_1 / sqrt(N))
+valor_p_1 <- pt(estatistica_t_1, df = N - 1, lower.tail = F)
+limite_confianca_1 <- confidence_limit(dfw$Meteorological.year)
+sprintf("(1) Rejeita H0? %s", valor_p_1 < regiao_critica)
+sprintf("(1) Limite de confiança: (%s, %s)", media_1 - limite_confianca_1, media_1 + limite_confianca_1)
+
+media_2 <- mean(dfw$Dec.Jan.Feb)
+desvio_padrao_2 <- sd(dfw$Dec.Jan.Feb)
+estatistica_t_2 <- (media_2 - 0) / (desvio_padrao_2 / sqrt(N))
+valor_p_2 <- pt(estatistica_t_2, df = N - 1, lower.tail = F)
+limite_confianca_2 <- confidence_limit(dfw$Dec.Jan.Feb)
+sprintf("(2) Rejeita H0? %s", valor_p_2 < regiao_critica)
+sprintf("(2) Limite de confiança: (%s, %s)", media_2 - limite_confianca_2, media_2 + limite_confianca_2)
+
+media_3 <- mean(dfw$Mar.Apr.May)
+desvio_padrao_3 <- sd(dfw$Mar.Apr.May)
+estatistica_t_3 <- (media_3 - 0) / (desvio_padrao_3 / sqrt(N))
+valor_p_3 <- pt(estatistica_t_3, df = N - 1, lower.tail = F)
+limite_confianca_3 <- confidence_limit(dfw$Mar.Apr.May)
+sprintf("(3) Rejeita H0? %s", valor_p_3 < regiao_critica)
+sprintf("(3) Limite de confiança: (%s, %s)", media_3 - limite_confianca_3, media_3 + limite_confianca_3)
+
+media_4 <- mean(dfw$Jun.Jul.Aug)
+desvio_padrao_4 <- sd(dfw$Jun.Jul.Aug)
+estatistica_t_4 <- (media_4 - 0) / (desvio_padrao_4 / sqrt(N))
+valor_p_4 <- pt(estatistica_t_4, df = N - 1, lower.tail = F)
+limite_confianca_4 <- confidence_limit(dfw$Jun.Jul.Aug)
+sprintf("(4) Rejeita H0? %s", valor_p_4 < regiao_critica)
+sprintf("(4) Limite de confiança: (%s, %s)", media_4 - limite_confianca_4, media_4 + limite_confianca_4)
+
+media_5 <- mean(dfw$Sep.Oct.Nov)
+desvio_padrao_5 <- sd(dfw$Sep.Oct.Nov)
+estatistica_t_5 <- (media_5 - 0) / (desvio_padrao_5 / sqrt(N))
+valor_p_5 <- pt(estatistica_t_5, df = N - 1, lower.tail = F)
+limite_confianca_5 <- confidence_limit(dfw$Sep.Oct.Nov)
+sprintf("(5) Rejeita H0? %s", valor_p_5 < regiao_critica)
+sprintf("(5) Limite de confiança: (%s, %s)", media_5 - limite_confianca_5, media_5 + limite_confianca_5)
+
+media_6 <- mean(dfw$Meteorological.year)
+desvio_padrao_6 <- sd(dfw$Meteorological.year)
+estatistica_t_6 <- (media_6 - 0) / (desvio_padrao_6 / sqrt(N))
+valor_p_6 <- pt(estatistica_t_6, df = N - 1, lower.tail = F)
+limite_confianca_6 <- confidence_limit(dfw$Meteorological.year)
+sprintf("(6) Rejeita H0? %s", valor_p_6 < regiao_critica)
+sprintf("(6) Limite de confiança: (%s, %s)", media_6 - limite_confianca_6, media_6 + limite_confianca_6)
+
+dft <- data.frame(
+  "Pergunta" = c(
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ),
+  "Intervalo" = c(
+    "Ano",
+    "Dez-Fev",
+    "Mar-Mai",
+    "Jun-Ago",
+    "Set-Nov",
+    "Global"
+  ),
+  "Média" = c(
+    media_1,
+    media_2,
+    media_3,
+    media_4,
+    media_5,
+    media_6
+  ),
+  "Desvio Padrão" = c(
+    desvio_padrao_1,
+    desvio_padrao_2,
+    desvio_padrao_3,
+    desvio_padrao_4,
+    desvio_padrao_5,
+    desvio_padrao_6
+  ),
+  "Estatística T" = c(
+    estatistica_t_1,
+    estatistica_t_2,
+    estatistica_t_3,
+    estatistica_t_4,
+    estatistica_t_5,
+    estatistica_t_6
+  ),
+  "Valor P" = c(
+    valor_p_1,
+    valor_p_2,
+    valor_p_3,
+    valor_p_4,
+    valor_p_5,
+    valor_p_6
+  ),
+  "Aceita H0?" = c(
+    valor_p_1 > regiao_critica,
+    valor_p_2 > regiao_critica,
+    valor_p_3 > regiao_critica,
+    valor_p_4 > regiao_critica,
+    valor_p_5 > regiao_critica,
+    valor_p_6 > regiao_critica
+  ),
+  "IC inferior" = c(
+    media_1 - limite_confianca_1,
+    media_2 - limite_confianca_2,
+    media_3 - limite_confianca_3,
+    media_4 - limite_confianca_4,
+    media_5 - limite_confianca_5,
+    media_6 - limite_confianca_6
+  ),
+  "IC superior" = c(
+    media_1 + limite_confianca_1,
+    media_2 + limite_confianca_2,
+    media_3 + limite_confianca_3,
+    media_4 + limite_confianca_4,
+    media_5 + limite_confianca_5,
+    media_6 + limite_confianca_6
+  )
+)
+
+```
+
+```{r}
+kable(
+  dft,
+  caption = "Resultados dos testes de hipótese",
+  digits = 3,
+  align = "c",
+  booktabs = T,
+  col.names = c(
+    "Pergunta",
+    "Intervalo",
+    "Média",
+    "Desvio Padrão",
+    "Estatística T",
+    "Valor P",
+    "Aceita H0?",
+    "IC inferior",
+    "IC superior"
+  ),
+  row.names = F,
+  format.args = list(
+    big.mark = ".",
+    decimal.mark = ","
+  )
+)
+```
+
+
+::: {.r-hstack .justify-end .custom__text-small}
+_* $\alpha = 0{,}05$ e região crítica de $1{,}670$_
+:::
+
+## Teste de hipóteses
+
+### Intervalos de confiança {.custom__center}
+
+::: {.r-hstack .justify-center}
+```{r, echo = FALSE}
+dft$Intervalo <- factor(dft$Intervalo, levels = unique(dft$Intervalo))
+ggplot(
+    data = dft,
+    aes(x = Intervalo, y = Média)
+  ) +
+  geom_bar(
+    aes(x = Intervalo, y = Média),
+    stat = "identity",
+    fill = "royalblue",
+    width = 0.5,
+  ) +
+  geom_errorbar(
+    aes(
+      x = Intervalo,
+      y = Média,
+      ymin = IC.inferior,
+      ymax = IC.superior
+    ),
+    colour = "blue",
+    linewidth = 0.8,
+    width = 0.1,
+  ) +
+  scale_y_continuous(breaks = breaks_pretty()) +
+  theme_minimal() +
+  theme(
+    axis.text.y = element_text(color = "#878888"),
+    axis.text.x = element_text(color = "#878888"),
+    panel.grid.minor = element_line(linetype = "dashed", color = "#d6d6d6", linewidth = 0.5),
+    panel.grid.major = element_line(linetype = "dashed", color = "#d6d6d6", linewidth = 0.5)
+  ) +
+  labs(x = "",
+       y = "Variação em °C") +
+  theme_minimal()
+```
+:::
+
+::: {.r-hstack .justify-end .custom__text-small}
+_* $\alpha = 0{,}05$_
+:::
+
+## Teste de hipóteses
+
+### Resultados {.custom__center}
+
+Com 95% de confiança, rejeita-se as **TODAS** as hipóteses nulas, portanto:
+
+::::: {.custom__list-group}
+:::: {.fragment .blur}
+1. Há fortes evidências de ter ocorrido um aumento na variação da temperatura média de todos os intervalos estudados.
+::::
+
+:::: {.fragment .blur}
+2. Isso é corroborado pelos intervalos de confiança, que mostra que $0$ não é um valor provável para a média da variação.
+::::
+:::::
+
+## Implicações e Conclusões Finais
+
+Em síntese:
+
+::::: {.custom__list-group}
+:::: {.fragment .blur}
+1. Deve haver um aumento anual na temperatura registrada no Brasil.
+::::
+
+:::: {.fragment .blur}
+2. Há um aumento significativo nas temperaturas de todas as estações.
+::::
+
+:::: {.fragment .blur}
+3. As maiores variações ocorreram nos períodos do verão e outono.
+::::
+
+:::: {.fragment .blur}
+4. Tudo indica que é um fenômeno global.
+::::
+:::::
+
+:::: {.r-hstack .justify-center}
+::: {.fragment .fade-up}
+![](./imagens/xablau.gif){fig-align="center"}
+
+###### Agradecemos pela atenção! {.custom__center}
+:::
+::::
