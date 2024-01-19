@@ -5,6 +5,20 @@
   color: #aaa !important;
 }
 
+table {
+  caption {
+    color: #aaa !important;
+  }
+
+  thead th {
+    border-bottom: 2px solid #aaa !important;
+  }
+
+  tbody td {
+    border-bottom: none !important;
+  }
+}
+
 .reveal.smaller {
   .callout.callout-style-default .callout-icon::before, .callout.callout-style-simple .callout-icon::before {
     height: 1rem !important;
@@ -28,18 +42,22 @@
   margin-top: -1.5rem;
 }
 
-.custom__list-group .fragment {
-  ol, ul {
-    margin-bottom: 0 !important;
-  }
+.custom__list-group {
+  margin-left: 2rem;
 
-  .custom__sub-item {
-    margin-left: 1.5rem;
-    margin-top: -0.5rem;
+  .fragment {
+    ol, ul {
+      margin-bottom: 0 !important;
+    }
+
+    .custom__sub-item {
+      margin-left: 1.5rem;
+      margin-top: -0.5rem;
+    }
   }
 }
 
-.custom__center {
+.custom__text-center {
   text-align: center;
 }
 

@@ -19,7 +19,7 @@ format:
     transition: slide
     slide-number: true
     width: 100%
-    height: 110%
+    height: 150%
     center: true
 ---
 
@@ -41,6 +41,22 @@ df <- read.csv("./dados/mudanca_climatica.csv", header = TRUE)
 dfw <- read.csv("./dados/mudanca_climatica_mundo.csv", header = TRUE)
 dfl <- read.csv("./dados/mudanca_climatica_list.csv", header = TRUE)
 ```
+
+
+```{r}
+dark_theme <- dark_theme_light() +
+  theme(
+    plot.background = element_rect(fill = "#191919"),
+    panel.background = element_blank()
+  )
+
+dark_theme_22 <- dark_theme_light(base_size = 22) +
+  theme(
+    plot.background = element_rect(fill = "#191919"),
+    panel.background = element_blank()
+  )
+```
+
 
 ## Objetivos
 
@@ -107,7 +123,7 @@ kable(
 
 ## Análise Descritiva {transition="zoom-in fade-out"}
 
-#### Temperatura média anual no Brasil {.custom__center}
+#### Temperatura média anual no Brasil {.custom__text-center}
 
 
 ::: {.r-hstack}
@@ -118,14 +134,11 @@ kable(
 #| echo: false
 
 p <- ggplot(df, aes(x = Year, y = Meteorological.year, fill = Meteorological.year)) +
-  geom_bar(stat = "identity") +
+  geom_bar(stat = "identity", color = ifelse(df$Meteorological.year < 0, "gray60", NA)) +
   scale_fill_viridis(option = "H") +
   labs(x = "Ano",
        y = "Variação em °C") +
-  dark_theme_light(base_size = 22) +
-  theme(
-    plot.background = element_rect(fill = "#191919")
-  ) +
+  dark_theme_22 +
   labs(fill = "Variação") +
   scale_x_continuous(breaks = seq(1960, 2020, 5)) +
   theme(axis.text = element_text(size = 20))
@@ -135,16 +148,12 @@ p
 
 ## Análise Descritiva
 
-#### Temperatura média anual no Brasil {.custom__center}
+#### Temperatura média anual no Brasil {.custom__text-center}
 
 
 ::: {.r-hstack .justify-center}
 ```{r, echo = FALSE}
-p +
-  dark_theme_light() +
-  theme(
-    plot.background = element_rect(fill = "#191919")
-  )
+p + dark_theme
 ```
 :::
 
@@ -164,7 +173,7 @@ p +
 
 ## Análise Descritiva {transition="zoom-in fade-out"}
 
-#### Temperatura média sazonal no Brasil {.custom__center}
+#### Temperatura média sazonal no Brasil {.custom__text-center}
 
 ::: {.r-hstack}
 ```{r, echo = FALSE}
@@ -174,18 +183,15 @@ p +
 #| echo: false
 
 p <- ggplot(dfw, aes(Year)) +
-  geom_line(aes(y = Meteorological.year, colour = "Anual")) + 
-  geom_line(aes(y = Dec.Jan.Feb, colour = "Dez-Fev")) +
-  geom_line(aes(y = Mar.Apr.May, colour = "Mar-Mai")) +
-  geom_line(aes(y = Jun.Jul.Aug, colour = "Jun-Ago")) +
-  geom_line(aes(y = Sep.Oct.Nov, colour = "Set-Nov")) +
+  geom_line(aes(y = Meteorological.year, colour = "Anual"), size = 1) + 
+  geom_line(aes(y = Dec.Jan.Feb, colour = "Dez-Fev"), size = 0.75) +
+  geom_line(aes(y = Mar.Apr.May, colour = "Mar-Mai"), size = 0.75) +
+  geom_line(aes(y = Jun.Jul.Aug, colour = "Jun-Ago"), size = 0.75) +
+  geom_line(aes(y = Sep.Oct.Nov, colour = "Set-Nov"), size = 0.75) +
   geom_line(aes(y = 0), col = "lightgray") +
   labs(x = "Ano",
        y = "Variação em °C") +
-  dark_theme_light(base_size = 22) +
-  theme(
-    plot.background = element_rect(fill = "#191919")
-  ) +
+  dark_theme_22 +
   labs(color = '') +
   scale_x_continuous(breaks = seq(1960, 2020, 5))
 p
@@ -194,15 +200,11 @@ p
 
 ## Análise Descritiva
 
-#### Temperatura média sazonal no Brasil {.custom__center}
+#### Temperatura média sazonal no Brasil {.custom__text-center}
 
 ::: {.r-hstack .justify-center}
 ```{r, echo = FALSE}
-p +
-  dark_theme_light() +
-  theme(
-    plot.background = element_rect(fill = "#191919")
-  )
+p + dark_theme
 ```
 :::
 
@@ -218,7 +220,7 @@ p +
 
 ## Análise Descritiva {transition="zoom-in fade-out"}
 
-#### Temperatura média anual global {.custom__center}
+#### Temperatura média anual global {.custom__text-center}
 
 ::: {.r-hstack}
 ```{r, echo = FALSE}
@@ -228,14 +230,11 @@ p +
 #| echo: false
 
 p <- ggplot(dfw, aes(x = Year, y = Meteorological.year, fill = Meteorological.year)) +
-  geom_bar(stat = "identity") +
+  geom_bar(stat = "identity", color = ifelse(dfw$Meteorological.year <= 0.001, "gray60", NA)) +
   scale_fill_viridis(option = "H") +
   labs(y = "Variação em °C",
        x = "Ano") +
-  dark_theme_light(base_size = 22) +
-  theme(
-    plot.background = element_rect(fill = "#191919")
-  ) +
+  dark_theme_22 +
   labs(fill = "Variação") +
   scale_x_continuous(breaks = seq(1960, 2020, 5))
 p
@@ -244,15 +243,11 @@ p
 
 ## Análise Descritiva
 
-#### Temperatura média anual global {.custom__center}
+#### Temperatura média anual global {.custom__text-center}
 
 ::: {.r-hstack .justify-center}
 ```{r, echo = FALSE}
-p +
-  dark_theme_light() +
-  theme(
-    plot.background = element_rect(fill = "#191919")
-  )
+p + dark_theme
 ```
 :::
 
@@ -268,7 +263,7 @@ p +
 
 ## Análise Descritiva
 
-#### Variação da temperatura média anual no Brasil {.custom__center}
+#### Variação da temperatura média anual no Brasil {.custom__text-center}
 
 :::: {.fragment .blur}
 Analisando a primeira e segunda derivadas temos:
@@ -320,7 +315,7 @@ kable(
 
 ## Análise Descritiva
 
-#### Distribuição {.custom__center}
+#### Distribuição {.custom__text-center}
 
 :::: {.columns .r-hstack .justify-center}
 
@@ -330,10 +325,7 @@ ggplot(data = melt(dfl), aes(x = Interval, y = value)) +
   geom_boxplot(aes(fill = Interval)) +
   labs(x = "",
        y = "Variação em °C") +
-  dark_theme_light() +
-  theme(
-    plot.background = element_rect(fill = "#191919")
-  ) +
+  dark_theme +
   labs(fill = '')
 ```
 :::
@@ -345,10 +337,7 @@ ggplot(data = dfl, aes(x = Value)) +
   facet_wrap(~Interval, nrow = 2) +
   labs(x = "Variação em °C",
        y = "Frequência") +
-  dark_theme_light() +
-  theme(
-    plot.background = element_rect(fill = "#191919")
-  ) +
+  dark_theme +
   theme(strip.background = element_rect(fill = "gray15", colour = "#191919",
                                         size = 0.5, linetype = "solid"),
         strip.text = element_text(face = "bold", colour = "white"))
@@ -428,16 +417,20 @@ Tentaremos, portanto, responder às seguintes perguntas sobre a variação da te
 :::: {.fragment .blur}
 Parâmetros utilizados:
 
+::: {.custom__list-group}
 - $\alpha = 0{,}05$;
 - $61$ graus de liberdade, e
 - Região crítica de $1{,}670$.
+:::
 ::::
 
 :::: {.fragment .blur}
 Hipóteses:
 
+::: {.custom__list-group}
 - $H_0$: $\mu$ = 0
 - $H_1$: $\mu$ > 0
+:::
 ::::
 
 ## Teste de hipóteses
@@ -621,7 +614,7 @@ _* $\alpha = 0{,}05$ e região crítica de $1{,}670$_
 
 ## Teste de hipóteses {transition="zoom-in fade-out"}
 
-### Intervalos de confiança {.custom__center}
+### Intervalos de confiança {.custom__text-center}
 
 ::: {.r-hstack}
 ```{r, echo = FALSE}
@@ -648,15 +641,12 @@ ggplot(
       ymin = IC.inferior,
       ymax = IC.superior
     ),
-    colour = "blue",
-    linewidth = 0.8,
+    colour = "lightblue",
+    linewidth = 1.5,
     width = 0.1,
   ) +
   scale_y_continuous(breaks = breaks_pretty()) +
-  dark_theme_light(base_size = 22) +
-  theme(
-    plot.background = element_rect(fill = "#191919"),
-  ) +
+  dark_theme_22 +
   labs(x = "",
        y = "Variação em °C")
 ```
@@ -668,9 +658,9 @@ _* $\alpha = 0{,}05$_
 
 ## Teste de hipóteses
 
-### Resultados {.custom__center}
+### Resultados {.custom__text-center}
 
-Com 95% de confiança, rejeita-se as **TODAS** as hipóteses nulas, portanto:
+Com 95% de confiança, rejeitam-se as **TODAS** as hipóteses nulas, portanto:
 
 ::::: {.custom__list-group}
 :::: {.fragment .blur}
@@ -708,6 +698,6 @@ Em síntese:
 ::: {.fragment .fade-up}
 ![](./imagens/xablau.gif){fig-align="center" width="500"}
 
-###### Agradecemos pela atenção! {.custom__center}
+###### Agradecemos pela atenção! {.custom__text-center}
 :::
 ::::
