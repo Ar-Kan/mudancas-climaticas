@@ -45,16 +45,12 @@ dfl <- read.csv("./dados/mudanca_climatica_list.csv", header = TRUE)
 
 ```{r}
 dark_theme <- dark_theme_light() +
-  theme(
-    plot.background = element_rect(fill = "#191919"),
-    panel.background = element_blank()
-  )
+  theme(plot.background = element_rect(fill = "#191919"),
+        panel.background = element_blank())
 
 dark_theme_22 <- dark_theme_light(base_size = 22) +
-  theme(
-    plot.background = element_rect(fill = "#191919"),
-    panel.background = element_blank()
-  )
+  theme(plot.background = element_rect(fill = "#191919"),
+        panel.background = element_blank())
 ```
 
 
@@ -106,12 +102,10 @@ dark_theme_22 <- dark_theme_light(base_size = 22) +
 
 :::: {.fragment .blur}
 ```{r, results='asis'}
-database_simplified <- df[
-  c(1:3, nrow(df):nrow(df)),
-  c(1,2,3,4,16,17,18)
-]
-database_simplified[3,] = "..."
-database_simplified[,4] = "..."
+database_simplified <- df[c(1:3, nrow(df):nrow(df)),
+                          c(1, 2, 3, 4, 16, 17, 18)]
+database_simplified[3, ] = "..."
+database_simplified[, 4] = "..."
 kable(
   database_simplified,
   caption = "Amostra dos dados",
@@ -133,8 +127,11 @@ kable(
 #| fig-align: 'center'
 #| echo: false
 
-p <- ggplot(df, aes(x = Year, y = Meteorological.year, fill = Meteorological.year)) +
-  geom_bar(stat = "identity", color = ifelse(df$Meteorological.year < 0, "gray60", NA)) +
+p <-
+  ggplot(df,
+         aes(x = Year, y = Meteorological.year, fill = Meteorological.year)) +
+  geom_bar(stat = "identity",
+           color = ifelse(df$Meteorological.year < 0, "gray60", NA)) +
   scale_fill_viridis(option = "H") +
   labs(x = "Ano",
        y = "Variação em °C") +
@@ -183,7 +180,7 @@ p + dark_theme
 #| echo: false
 
 p <- ggplot(dfw, aes(Year)) +
-  geom_line(aes(y = Meteorological.year, colour = "Anual"), size = 1) + 
+  geom_line(aes(y = Meteorological.year, colour = "Anual"), size = 1) +
   geom_line(aes(y = Dec.Jan.Feb, colour = "Dez-Fev"), size = 0.75) +
   geom_line(aes(y = Mar.Apr.May, colour = "Mar-Mai"), size = 0.75) +
   geom_line(aes(y = Jun.Jul.Aug, colour = "Jun-Ago"), size = 0.75) +
@@ -229,8 +226,11 @@ p + dark_theme
 #| fig-align: 'center'
 #| echo: false
 
-p <- ggplot(dfw, aes(x = Year, y = Meteorological.year, fill = Meteorological.year)) +
-  geom_bar(stat = "identity", color = ifelse(dfw$Meteorological.year <= 0.001, "gray60", NA)) +
+p <-
+  ggplot(dfw,
+         aes(x = Year, y = Meteorological.year, fill = Meteorological.year)) +
+  geom_bar(stat = "identity",
+           color = ifelse(dfw$Meteorological.year <= 0.001, "gray60", NA)) +
   scale_fill_viridis(option = "H") +
   labs(y = "Variação em °C",
        x = "Ano") +
@@ -275,24 +275,18 @@ diff2 <- diff(diff)
 kable(
   data.frame(
     "Derivada" = c("Primeira", "Segunda"),
-    "Média" = c(
-      mean(diff, na.rm = TRUE),
-      mean(diff2, na.rm = TRUE)
-    ),
-    "Mediana" = c(
-      median(diff, na.rm = TRUE),
-      median(diff2, na.rm = TRUE)
-    )
+    "Média" = c(mean(diff, na.rm = TRUE),
+                mean(diff2, na.rm = TRUE)),
+    "Mediana" = c(median(diff, na.rm = TRUE),
+                  median(diff2, na.rm = TRUE))
   ),
   caption = "Média e mediana das derivadas",
   digits = 4,
   col.names = c("Derivada", "Média", "Mediana"),
   row.names = FALSE,
   align = "c",
-  format.args = list(
-    big.mark = ".",
-    decimal.mark = ","
-  )
+  format.args = list(big.mark = ".",
+                     decimal.mark = ",")
   
 )
 ```
@@ -333,14 +327,22 @@ ggplot(data = melt(dfl), aes(x = Interval, y = value)) +
 ::: {.column width="50%" }
 ```{r}
 ggplot(data = dfl, aes(x = Value)) +
-  geom_histogram(bins = 10, colour = "gray", fill = "royalblue") +
-  facet_wrap(~Interval, nrow = 2) +
+  geom_histogram(bins = 10,
+                 colour = "gray",
+                 fill = "royalblue") +
+  facet_wrap( ~ Interval, nrow = 2) +
   labs(x = "Variação em °C",
        y = "Frequência") +
   dark_theme +
-  theme(strip.background = element_rect(fill = "gray15", colour = "#191919",
-                                        size = 0.5, linetype = "solid"),
-        strip.text = element_text(face = "bold", colour = "white"))
+  theme(
+    strip.background = element_rect(
+      fill = "gray15",
+      colour = "#191919",
+      size = 0.5,
+      linetype = "solid"
+    ),
+    strip.text = element_text(face = "bold", colour = "white")
+  )
 ```
 :::
 
@@ -452,6 +454,7 @@ confidence_limit <- function(data) {
 # 5. Há uma tendência de aumento da temperatura média no Brasil na primavera (Set-Nov)?
 # 6. Há uma tendência de aumento da temperatura média anual no mundo?
 
+
 N <- 62
 alpha <- 0.05
 regiao_critica <- qt(alpha, df = N - 1, lower.tail = F)
@@ -462,7 +465,11 @@ estatistica_t_1 <- (media_1 - 0) / (desvio_padrao_1 / sqrt(N))
 valor_p_1 <- pt(estatistica_t_1, df = N - 1, lower.tail = F)
 limite_confianca_1 <- confidence_limit(dfw$Meteorological.year)
 sprintf("(1) Rejeita H0? %s", valor_p_1 < regiao_critica)
-sprintf("(1) Limite de confiança: (%s, %s)", media_1 - limite_confianca_1, media_1 + limite_confianca_1)
+sprintf(
+  "(1) Limite de confiança: (%s, %s)",
+  media_1 - limite_confianca_1,
+  media_1 + limite_confianca_1
+)
 
 media_2 <- mean(dfw$Dec.Jan.Feb)
 desvio_padrao_2 <- sd(dfw$Dec.Jan.Feb)
@@ -470,7 +477,11 @@ estatistica_t_2 <- (media_2 - 0) / (desvio_padrao_2 / sqrt(N))
 valor_p_2 <- pt(estatistica_t_2, df = N - 1, lower.tail = F)
 limite_confianca_2 <- confidence_limit(dfw$Dec.Jan.Feb)
 sprintf("(2) Rejeita H0? %s", valor_p_2 < regiao_critica)
-sprintf("(2) Limite de confiança: (%s, %s)", media_2 - limite_confianca_2, media_2 + limite_confianca_2)
+sprintf(
+  "(2) Limite de confiança: (%s, %s)",
+  media_2 - limite_confianca_2,
+  media_2 + limite_confianca_2
+)
 
 media_3 <- mean(dfw$Mar.Apr.May)
 desvio_padrao_3 <- sd(dfw$Mar.Apr.May)
@@ -478,7 +489,11 @@ estatistica_t_3 <- (media_3 - 0) / (desvio_padrao_3 / sqrt(N))
 valor_p_3 <- pt(estatistica_t_3, df = N - 1, lower.tail = F)
 limite_confianca_3 <- confidence_limit(dfw$Mar.Apr.May)
 sprintf("(3) Rejeita H0? %s", valor_p_3 < regiao_critica)
-sprintf("(3) Limite de confiança: (%s, %s)", media_3 - limite_confianca_3, media_3 + limite_confianca_3)
+sprintf(
+  "(3) Limite de confiança: (%s, %s)",
+  media_3 - limite_confianca_3,
+  media_3 + limite_confianca_3
+)
 
 media_4 <- mean(dfw$Jun.Jul.Aug)
 desvio_padrao_4 <- sd(dfw$Jun.Jul.Aug)
@@ -486,7 +501,11 @@ estatistica_t_4 <- (media_4 - 0) / (desvio_padrao_4 / sqrt(N))
 valor_p_4 <- pt(estatistica_t_4, df = N - 1, lower.tail = F)
 limite_confianca_4 <- confidence_limit(dfw$Jun.Jul.Aug)
 sprintf("(4) Rejeita H0? %s", valor_p_4 < regiao_critica)
-sprintf("(4) Limite de confiança: (%s, %s)", media_4 - limite_confianca_4, media_4 + limite_confianca_4)
+sprintf(
+  "(4) Limite de confiança: (%s, %s)",
+  media_4 - limite_confianca_4,
+  media_4 + limite_confianca_4
+)
 
 media_5 <- mean(dfw$Sep.Oct.Nov)
 desvio_padrao_5 <- sd(dfw$Sep.Oct.Nov)
@@ -494,7 +513,11 @@ estatistica_t_5 <- (media_5 - 0) / (desvio_padrao_5 / sqrt(N))
 valor_p_5 <- pt(estatistica_t_5, df = N - 1, lower.tail = F)
 limite_confianca_5 <- confidence_limit(dfw$Sep.Oct.Nov)
 sprintf("(5) Rejeita H0? %s", valor_p_5 < regiao_critica)
-sprintf("(5) Limite de confiança: (%s, %s)", media_5 - limite_confianca_5, media_5 + limite_confianca_5)
+sprintf(
+  "(5) Limite de confiança: (%s, %s)",
+  media_5 - limite_confianca_5,
+  media_5 + limite_confianca_5
+)
 
 media_6 <- mean(dfw$Meteorological.year)
 desvio_padrao_6 <- sd(dfw$Meteorological.year)
@@ -502,33 +525,31 @@ estatistica_t_6 <- (media_6 - 0) / (desvio_padrao_6 / sqrt(N))
 valor_p_6 <- pt(estatistica_t_6, df = N - 1, lower.tail = F)
 limite_confianca_6 <- confidence_limit(dfw$Meteorological.year)
 sprintf("(6) Rejeita H0? %s", valor_p_6 < regiao_critica)
-sprintf("(6) Limite de confiança: (%s, %s)", media_6 - limite_confianca_6, media_6 + limite_confianca_6)
+sprintf(
+  "(6) Limite de confiança: (%s, %s)",
+  media_6 - limite_confianca_6,
+  media_6 + limite_confianca_6
+)
 
 dft <- data.frame(
-  "Pergunta" = c(
-    1,
-    2,
-    3,
-    4,
-    5,
-    6
-  ),
-  "Intervalo" = c(
-    "Ano",
-    "Dez-Fev",
-    "Mar-Mai",
-    "Jun-Ago",
-    "Set-Nov",
-    "Global"
-  ),
-  "Média" = c(
-    media_1,
-    media_2,
-    media_3,
-    media_4,
-    media_5,
-    media_6
-  ),
+  "Pergunta" = c(1,
+                 2,
+                 3,
+                 4,
+                 5,
+                 6),
+  "Intervalo" = c("Ano",
+                  "Dez-Fev",
+                  "Mar-Mai",
+                  "Jun-Ago",
+                  "Set-Nov",
+                  "Global"),
+  "Média" = c(media_1,
+              media_2,
+              media_3,
+              media_4,
+              media_5,
+              media_6),
   "Desvio Padrão" = c(
     desvio_padrao_1,
     desvio_padrao_2,
@@ -600,10 +621,8 @@ kable(
     "IC superior"
   ),
   row.names = F,
-  format.args = list(
-    big.mark = ".",
-    decimal.mark = ","
-  )
+  format.args = list(big.mark = ".",
+                     decimal.mark = ",")
 )
 ```
 
@@ -623,11 +642,10 @@ _* $\alpha = 0{,}05$ e região crítica de $1{,}670$_
 #| fig-align: 'center'
 #| echo: false
 
-dft$Intervalo <- factor(dft$Intervalo, levels = unique(dft$Intervalo))
-ggplot(
-    data = dft,
-    aes(x = Intervalo, y = Média)
-  ) +
+dft$Intervalo <-
+  factor(dft$Intervalo, levels = unique(dft$Intervalo))
+ggplot(data = dft,
+       aes(x = Intervalo, y = Média)) +
   geom_bar(
     aes(x = Intervalo, y = Média),
     stat = "identity",
