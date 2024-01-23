@@ -122,7 +122,7 @@ dark_theme_22 <- dark_theme_light(base_size = 22) +
 ::::
 :::::
 
-## Metodologia
+## Amostra
 
 ```{r, results='asis'}
 database_simplified <- df[c(1:4, (nrow(df) - 1):nrow(df)),
@@ -131,7 +131,6 @@ database_simplified[3,] <- "..."
 database_simplified[, 4] <- "..."
 kable(
   database_simplified,
-  caption = "Amostra dos dados",
   col.names = c("Ano", "Jan", "Fev", " ", "Mar-Mai", "Jun-Ago", "Set-Nov", "Anual"),
   align = "r"
 )
