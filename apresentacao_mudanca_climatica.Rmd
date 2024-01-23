@@ -201,7 +201,7 @@ p + dark_theme
 #| fig-align: 'center'
 #| echo: false
 
-p <- ggplot(dfw, aes(Year)) +
+p <- ggplot(df, aes(Year)) +
   geom_line(aes(y = Meteorological.year, colour = "Anual"), size = 1) +
   geom_line(aes(y = Dec.Jan.Feb, colour = "Dez-Fev"), size = 0.75) +
   geom_line(aes(y = Mar.Apr.May, colour = "Mar-Mai"), size = 0.75) +
@@ -498,11 +498,12 @@ N <- 62
 alpha <- 0.05
 regiao_critica <- qt(alpha, df = N - 1, lower.tail = F)
 
-media_1 <- mean(dfw$Meteorological.year)
-desvio_padrao_1 <- sd(dfw$Meteorological.year)
+dados <- df$Meteorological.year
+media_1 <- mean(dados)
+desvio_padrao_1 <- sd(dados)
 estatistica_t_1 <- (media_1 - 0) / (desvio_padrao_1 / sqrt(N))
 valor_p_1 <- pt(estatistica_t_1, df = N - 1, lower.tail = F)
-limite_confianca_1 <- confidence_limit(dfw$Meteorological.year)
+limite_confianca_1 <- confidence_limit(dados)
 sprintf("(1) Rejeita H0? %s", valor_p_1 < regiao_critica)
 sprintf(
   "(1) Limite de confiança: (%s, %s)",
@@ -510,11 +511,12 @@ sprintf(
   media_1 + limite_confianca_1
 )
 
-media_2 <- mean(dfw$Dec.Jan.Feb)
-desvio_padrao_2 <- sd(dfw$Dec.Jan.Feb)
+dados <- df$Dec.Jan.Feb
+media_2 <- mean(dados)
+desvio_padrao_2 <- sd(dados)
 estatistica_t_2 <- (media_2 - 0) / (desvio_padrao_2 / sqrt(N))
 valor_p_2 <- pt(estatistica_t_2, df = N - 1, lower.tail = F)
-limite_confianca_2 <- confidence_limit(dfw$Dec.Jan.Feb)
+limite_confianca_2 <- confidence_limit(dados)
 sprintf("(2) Rejeita H0? %s", valor_p_2 < regiao_critica)
 sprintf(
   "(2) Limite de confiança: (%s, %s)",
@@ -522,11 +524,12 @@ sprintf(
   media_2 + limite_confianca_2
 )
 
-media_3 <- mean(dfw$Mar.Apr.May)
-desvio_padrao_3 <- sd(dfw$Mar.Apr.May)
+dados <- df$Mar.Apr.May
+media_3 <- mean(dados)
+desvio_padrao_3 <- sd(dados)
 estatistica_t_3 <- (media_3 - 0) / (desvio_padrao_3 / sqrt(N))
 valor_p_3 <- pt(estatistica_t_3, df = N - 1, lower.tail = F)
-limite_confianca_3 <- confidence_limit(dfw$Mar.Apr.May)
+limite_confianca_3 <- confidence_limit(dados)
 sprintf("(3) Rejeita H0? %s", valor_p_3 < regiao_critica)
 sprintf(
   "(3) Limite de confiança: (%s, %s)",
@@ -534,11 +537,12 @@ sprintf(
   media_3 + limite_confianca_3
 )
 
-media_4 <- mean(dfw$Jun.Jul.Aug)
-desvio_padrao_4 <- sd(dfw$Jun.Jul.Aug)
+dados <- df$Jun.Jul.Aug
+media_4 <- mean(dados)
+desvio_padrao_4 <- sd(dados)
 estatistica_t_4 <- (media_4 - 0) / (desvio_padrao_4 / sqrt(N))
 valor_p_4 <- pt(estatistica_t_4, df = N - 1, lower.tail = F)
-limite_confianca_4 <- confidence_limit(dfw$Jun.Jul.Aug)
+limite_confianca_4 <- confidence_limit(dados)
 sprintf("(4) Rejeita H0? %s", valor_p_4 < regiao_critica)
 sprintf(
   "(4) Limite de confiança: (%s, %s)",
@@ -546,11 +550,12 @@ sprintf(
   media_4 + limite_confianca_4
 )
 
-media_5 <- mean(dfw$Sep.Oct.Nov)
-desvio_padrao_5 <- sd(dfw$Sep.Oct.Nov)
+dados <- df$Sep.Oct.Nov
+media_5 <- mean(dados)
+desvio_padrao_5 <- sd(dados)
 estatistica_t_5 <- (media_5 - 0) / (desvio_padrao_5 / sqrt(N))
 valor_p_5 <- pt(estatistica_t_5, df = N - 1, lower.tail = F)
-limite_confianca_5 <- confidence_limit(dfw$Sep.Oct.Nov)
+limite_confianca_5 <- confidence_limit(dados)
 sprintf("(5) Rejeita H0? %s", valor_p_5 < regiao_critica)
 sprintf(
   "(5) Limite de confiança: (%s, %s)",
@@ -558,11 +563,12 @@ sprintf(
   media_5 + limite_confianca_5
 )
 
-media_6 <- mean(dfw$Meteorological.year)
-desvio_padrao_6 <- sd(dfw$Meteorological.year)
+dados <- dfw$Meteorological.year
+media_6 <- mean(dados)
+desvio_padrao_6 <- sd(dados)
 estatistica_t_6 <- (media_6 - 0) / (desvio_padrao_6 / sqrt(N))
 valor_p_6 <- pt(estatistica_t_6, df = N - 1, lower.tail = F)
-limite_confianca_6 <- confidence_limit(dfw$Meteorological.year)
+limite_confianca_6 <- confidence_limit(dados)
 sprintf("(6) Rejeita H0? %s", valor_p_6 < regiao_critica)
 sprintf(
   "(6) Limite de confiança: (%s, %s)",
