@@ -1,14 +1,15 @@
 ---
 title: "Testes de hipóteses sobre mudanças climáticas no Brasil"
 title-slide-attributes:
-    data-background-image: ./imagens/capa_mudancas-climaticas.png
-    data-background-size: cover
-    data-background-opacity: "0.35"
+  data-background-image: ./imagens/capa_mudancas-climaticas.png
+  data-background-size: cover
+  data-background-opacity: "0.35"
 
 format:
   revealjs:
     output-dir: .
     output-file: index.html
+    center-title-slide: true
     embed-resources: true
     footer: Alan Abrahão. Arquimedes Macedo. Mariana Coin. Tiago Cortelini.
     lang: pt-BR
@@ -18,9 +19,9 @@ format:
     incremental: false
     transition: slide
     slide-number: true
-    width: 100%
-    height: 150%
-    center: true
+    center: false
+    width: 150%
+    height: 140%
 ---
 
 ```{r, echo = FALSE, results='hide', message=FALSE}
@@ -52,6 +53,27 @@ dark_theme_22 <- dark_theme_light(base_size = 22) +
   theme(plot.background = element_rect(fill = "#191919"),
         panel.background = element_blank())
 ```
+
+## Como as mudanças climáticas têm moldado o mundo nos últimos anos?
+
+:::: {.r-hstack .justify-center}
+![](./imagens/manchetes.png){fig-align="center" width="90%"}
+::::
+
+##
+
+:::: {.r-hstack .justify-center}
+![](./imagens/quote-samantha-burgess.png){fig-align="center" width="90%"}
+::::
+
+## Políticas Mundiais
+
+::::: {.custom__list-group}
+- onvenção-Quadro da ONU sobre Mudança do Clima – ONU, 1992.
+- Protocolo de Quito – Japão, 1997.
+- Acordo de Paris - França, 2005.
+- Política Nacional sobre Mudança do Clima – Brasil, 2009.
+:::::
 
 
 ## Objetivos
@@ -90,7 +112,7 @@ dark_theme_22 <- dark_theme_light(base_size = 22) +
 ::::: {.custom__list-group}
 :::: {.fragment .blur}
 - Dados obtidos de FAOSTAT (base de dados estatísticos mantida pela FAO -- Food and Agriculture Organization).
-  - Uma das agências da ONU para a Alimentação e a Agricultura.
+- Uma das agências da ONU para a Alimentação e a Agricultura.
 - Origem é o GISTEMP -- Banco de Dados de Temperatura Global da NASA.
 ::::
 
@@ -100,12 +122,13 @@ dark_theme_22 <- dark_theme_light(base_size = 22) +
 ::::
 :::::
 
-:::: {.fragment .blur}
+## Metodologia
+
 ```{r, results='asis'}
 database_simplified <- df[c(1:3, nrow(df):nrow(df)),
                           c(1, 2, 3, 4, 16, 17, 18)]
-database_simplified[3, ] = "..."
-database_simplified[, 4] = "..."
+database_simplified[3,] <- "..."
+database_simplified[, 4] <- "..."
 kable(
   database_simplified,
   caption = "Amostra dos dados",
@@ -113,14 +136,12 @@ kable(
   align = "r"
 )
 ```
-::::
 
 ## Análise Descritiva {transition="zoom-in fade-out"}
 
 #### Temperatura média anual no Brasil {.custom__text-center}
 
-
-::: {.r-hstack}
+::: {.r-hstack .custom__solo-chart}
 ```{r, echo = FALSE}
 #| fig-width: 20
 #| fig-height: 10
@@ -130,15 +151,15 @@ kable(
 p <-
   ggplot(df,
          aes(x = Year, y = Meteorological.year, fill = Meteorological.year)) +
-  geom_bar(stat = "identity",
-           color = ifelse(df$Meteorological.year < 0, "gray60", NA)) +
-  scale_fill_viridis(option = "H") +
-  labs(x = "Ano",
-       y = "Variação em °C") +
-  dark_theme_22 +
-  labs(fill = "Variação") +
-  scale_x_continuous(breaks = seq(1960, 2020, 5)) +
-  theme(axis.text = element_text(size = 20))
+    geom_bar(stat = "identity",
+             color = ifelse(df$Meteorological.year < 0, "gray60", NA)) +
+    scale_fill_viridis(option = "H") +
+    labs(x = "Ano",
+         y = "Variação em °C") +
+    dark_theme_22 +
+    labs(fill = "Variação") +
+    scale_x_continuous(breaks = seq(1960, 2020, 5)) +
+    theme(axis.text = element_text(size = 20))
 p
 ```
 :::
@@ -147,24 +168,26 @@ p
 
 #### Temperatura média anual no Brasil {.custom__text-center}
 
+::::: {.columns .r-hstack .justify-center}
 
-::: {.r-hstack .justify-center}
+::: {.column width="50%" .r-hstack .justify-center}
 ```{r, echo = FALSE}
 p + dark_theme
 ```
 :::
 
-::::: {.custom__list-group}
-:::: {.fragment .blur}
+:::: {.column width="50%" .custom__list-group}
+::: {.fragment .blur}
 1. Tendência ascendente no gráfico.
-::::
+:::
 
-:::: {.fragment .blur}
+::: {.fragment .blur}
 2. Indicação de aumento consistente nas temperaturas.
-::::
+:::
 
-:::: {.fragment .blur}
+::: {.fragment .blur}
 3. Padrão que sugere uma mudança significativa no clima ao longo de seis décadas.
+:::
 ::::
 :::::
 
@@ -172,7 +195,7 @@ p + dark_theme
 
 #### Temperatura média sazonal no Brasil {.custom__text-center}
 
-::: {.r-hstack}
+::: {.r-hstack .custom__solo-chart}
 ```{r, echo = FALSE}
 #| fig-width: 20
 #| fig-height: 10
@@ -199,19 +222,22 @@ p
 
 #### Temperatura média sazonal no Brasil {.custom__text-center}
 
-::: {.r-hstack .justify-center}
+::::: {.columns .r-hstack .justify-center}
+
+::: {.column width="50%" .r-hstack .justify-center}
 ```{r, echo = FALSE}
 p + dark_theme
 ```
 :::
 
-::::: {.custom__list-group}
-:::: {.fragment .blur}
+:::: {.column width="50%" .custom__list-group}
+::: {.fragment .blur}
 1. Segue tendências consistentes em todas as estações.
-::::
+:::
 
-:::: {.fragment .blur}
+::: {.fragment .blur}
 2. Não é possível identificar um evento específico ligado às estações responsável pelas mudanças climáticas observadas.
+:::
 ::::
 :::::
 
@@ -219,7 +245,7 @@ p + dark_theme
 
 #### Temperatura média anual global {.custom__text-center}
 
-::: {.r-hstack}
+::: {.r-hstack .custom__solo-chart}
 ```{r, echo = FALSE}
 #| fig-width: 20
 #| fig-height: 10
@@ -229,14 +255,14 @@ p + dark_theme
 p <-
   ggplot(dfw,
          aes(x = Year, y = Meteorological.year, fill = Meteorological.year)) +
-  geom_bar(stat = "identity",
-           color = ifelse(dfw$Meteorological.year <= 0.001, "gray60", NA)) +
-  scale_fill_viridis(option = "H") +
-  labs(y = "Variação em °C",
-       x = "Ano") +
-  dark_theme_22 +
-  labs(fill = "Variação") +
-  scale_x_continuous(breaks = seq(1960, 2020, 5))
+    geom_bar(stat = "identity",
+             color = ifelse(dfw$Meteorological.year <= 0.001, "gray60", NA)) +
+    scale_fill_viridis(option = "H") +
+    labs(y = "Variação em °C",
+         x = "Ano") +
+    dark_theme_22 +
+    labs(fill = "Variação") +
+    scale_x_continuous(breaks = seq(1960, 2020, 5))
 p
 ```
 :::
@@ -245,19 +271,22 @@ p
 
 #### Temperatura média anual global {.custom__text-center}
 
-::: {.r-hstack .justify-center}
+::::: {.columns .r-hstack .justify-center}
+
+::: {.column width="50%" .r-hstack .justify-center}
 ```{r, echo = FALSE}
 p + dark_theme
 ```
 :::
 
-::::: {.custom__list-group}
-:::: {.fragment .blur}
+:::: {.column width="50%" .custom__list-group}
+::: {.fragment .blur}
 1. Variação da temperatura média global apresenta tendência semelhante à observada no Brasil.
-::::
+:::
 
 :::: {.fragment .blur}
 2. Não é uma tendência exclusivamente brasileira.
+:::
 ::::
 :::::
 
@@ -287,7 +316,7 @@ kable(
   align = "c",
   format.args = list(big.mark = ".",
                      decimal.mark = ",")
-  
+
 )
 ```
 ::::
@@ -299,11 +328,11 @@ kable(
 ::::
 
 :::: {.fragment .blur}
-2. Aumento médio de 0,012°C por ano.
+2. Aumento médio de $0{,}012\,^{\text{o}}\text{C}$ anuais.
 ::::
 
 :::: {.fragment .blur}
-3. Crescendo 0,002°C anualmente.
+3. Crescendo $0{,}002\,^{\text{o}}\text{C}$ anualmente.
 ::::
 :::::
 
@@ -315,6 +344,10 @@ kable(
 
 ::: {.column width="50%"}
 ```{r, echo = FALSE}
+#| fig-width: 8
+#| fig-height: 3
+#| fig-align: 'center'
+
 ggplot(data = melt(dfl), aes(x = Interval, y = value)) +
   geom_boxplot(aes(fill = Interval)) +
   labs(x = "",
@@ -324,13 +357,17 @@ ggplot(data = melt(dfl), aes(x = Interval, y = value)) +
 ```
 :::
 
-::: {.column width="50%" }
-```{r}
+::: {.column width="50%"}
+```{r, echo = FALSE}
+#| fig-width: 8
+#| fig-height: 3
+#| fig-align: 'center'
+
 ggplot(data = dfl, aes(x = Value)) +
   geom_histogram(bins = 10,
                  colour = "gray",
                  fill = "royalblue") +
-  facet_wrap( ~ Interval, nrow = 2) +
+  facet_wrap(~Interval, nrow = 2) +
   labs(x = "Variação em °C",
        y = "Frequência") +
   dark_theme +
@@ -416,24 +453,27 @@ Tentaremos, portanto, responder às seguintes perguntas sobre a variação da te
 
 ## Teste de hipóteses
 
-:::: {.fragment .blur}
+::::: {.columns .r-hstack .justify-center}
+
+:::: {.column width="50%" .fragment .blur}
 Parâmetros utilizados:
 
 ::: {.custom__list-group}
 - $\alpha = 0{,}05$;
-- $61$ graus de liberdade, e
+- $61$ graus de liberdade, e,
 - Região crítica de $1{,}670$.
 :::
 ::::
 
-:::: {.fragment .blur}
+:::: {.column width="50%" .fragment .blur}
 Hipóteses:
 
 ::: {.custom__list-group}
-- $H_0$: $\mu$ = 0
-- $H_1$: $\mu$ > 0
+- $H_0$: $\mu = 0$
+- $H_1$: $\mu > 0$
 :::
 ::::
+:::::
 
 ## Teste de hipóteses
 
@@ -635,10 +675,10 @@ _* $\alpha = 0{,}05$ e região crítica de $1{,}670$_
 
 ### Intervalos de confiança {.custom__text-center}
 
-::: {.r-hstack}
+::: {.r-hstack .custom__solo-chart}
 ```{r, echo = FALSE}
-#| fig-width: 20
-#| fig-height: 10
+#| fig-width: 10
+#| fig-height: 5
 #| fig-align: 'center'
 #| echo: false
 
@@ -678,7 +718,7 @@ _* $\alpha = 0{,}05$_
 
 ### Resultados {.custom__text-center}
 
-Com 95% de confiança, rejeitam-se as **TODAS** as hipóteses nulas, portanto:
+Com $95\%$ de confiança, rejeitam-se as **TODAS** as hipóteses nulas, portanto:
 
 ::::: {.custom__list-group}
 :::: {.fragment .blur}

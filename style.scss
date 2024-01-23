@@ -1,5 +1,4 @@
 /*-- scss:rules --*/
-
 .footer {
   font-weight: bold;
   color: #aaa !important;
@@ -24,6 +23,14 @@ table {
     height: 1rem !important;
     width: 1rem !important;
     background-size: 1rem 1rem !important;
+  }
+}
+
+.custom__solo-chart{
+  .cell {
+    img {
+      max-height: 90vh;
+    }
   }
 }
 
