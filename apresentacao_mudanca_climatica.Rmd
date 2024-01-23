@@ -69,7 +69,7 @@ dark_theme_22 <- dark_theme_light(base_size = 22) +
 ## Políticas Mundiais
 
 ::::: {.custom__list-group}
-- onvenção-Quadro da ONU sobre Mudança do Clima – ONU, 1992.
+- Convenção-Quadro da ONU sobre Mudança do Clima – ONU, 1992.
 - Protocolo de Quito – Japão, 1997.
 - Acordo de Paris - França, 2005.
 - Política Nacional sobre Mudança do Clima – Brasil, 2009.
