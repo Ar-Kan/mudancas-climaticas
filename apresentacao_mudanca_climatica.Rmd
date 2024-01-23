@@ -70,7 +70,7 @@ dark_theme_22 <- dark_theme_light(base_size = 22) +
 
 ::::: {.custom__list-group}
 - Convenção-Quadro da ONU sobre Mudança do Clima – ONU, 1992.
-- Protocolo de Quito – Japão, 1997.
+- Protocolo de Quioto – Japão, 1997.
 - Acordo de Paris - França, 2005.
 - Política Nacional sobre Mudança do Clima – Brasil, 2009.
 :::::
@@ -749,7 +749,7 @@ Em síntese:
 ::::
 
 :::: {.fragment .blur}
-3. As maiores variações ocorreram nos períodos do verão e outono.
+3. As maiores variações ocorreram nos períodos do inverno e primavera.
 ::::
 
 :::: {.fragment .blur}
